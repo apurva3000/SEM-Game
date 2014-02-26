@@ -25,7 +25,8 @@ static final String PLAYER_GREETING_STR = "WELCOME TO THE ADVENTURE";
 
 static final int WELCOME_DELAY_TIME = 2000;
 
-String player_name_str = "";
+
+Player player;
 
 int state = 0;
 ControlP5 cp5;
@@ -75,10 +76,14 @@ void handlePlayerNameRequest() {
 void handlePlayerGreeting() {
       cp5.remove("submit");
       cp5.remove("Player's name");
+      
+      String player_name_str = player.getName();
+      
       background(welcome_bg);
       fill(255);
       textSize(40);
       textAlign(CENTER, CENTER);
+      
       text(PLAYER_GREETING_STR, 360, 100);
       text(player_name_str, 360, 150);
       // stop screen for a while
@@ -116,17 +121,21 @@ void draw() {
 }
 
 void keyPressed() {
-  ship.setKeys(keyCode, true);
+  ship.mapMovement(keyCode, true);
 }
  
 void keyReleased() {
-  ship.setKeys(keyCode, false);
+  ship.mapMovement(keyCode, false);
 }
 
 public void submit() {
+  String player_name_str = "";
   state = PLAYER_GREETING_STA;  
   player_name_str = cp5.get(Textfield.class,"Player's name").getText();
   print(player_name_str);
+  
+  Player player = new Player(player_name_str,0);
+  
   now = millis();
   time_delay = WELCOME_DELAY_TIME;
 }
