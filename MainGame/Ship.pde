@@ -40,29 +40,16 @@ void update(){
   if(y>gh-5) y=1;
   if(y<0) y=gh-10;
 
-  v *= ACCEL;
-  
-  
-  
+  v *= ACCEL;  
 }
  
 void display() {
+  pushMatrix();
   translate(x, y);
   rotate(z);
   background(space_bg);
-  image(spaceship, -5,-5);
- 
- 
- 
-  
+  image(spaceship, -5,-5); 
+  popMatrix();
 }
-  
-  
-  
-  
- 
-  
-  
-  
-  
+   
 }
