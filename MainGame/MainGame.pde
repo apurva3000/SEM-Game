@@ -134,7 +134,7 @@ public void submit() {
   player_name_str = cp5.get(Textfield.class,"Player's name").getText();
   print(player_name_str);
   
-  Player player = new Player(player_name_str,0);
+  player = new Player(player_name_str,0);
   
   now = millis();
   time_delay = WELCOME_DELAY_TIME;
