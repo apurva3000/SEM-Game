@@ -50,23 +50,42 @@ void update(){
   if(y>hei-5) y=1;
   if(y<0) y=hei-10;
 
+<<<<<<< HEAD
   v  = v*Acceleration;
   
   
   
+=======
+  v *= ACCEL;  
+>>>>>>> test
 }
  
-void display() {
-  translate(x, y);
-  rotate(z);
+void display(boolean over) {
   background(space_bg);
-  image(spaceship, -5,-5);
- 
- 
- 
   
+  if(over==false){
+    pushMatrix();
+    translate(x, y);
+    rotate(z);
+    image(spaceship, -5,-5,50,50);
+    spaceship.loadPixels();
+    int loc = int(x) + int(y*spaceship.width);
+    //text(x,50,50);
+    
+    popMatrix();
+  }
+  else{
+   text("Game Over" , gw/2,gh/2);
+  } 
+  text(brightness(spaceship.pixels[100]),500,500);
 }
+
+
   
   
+<<<<<<< HEAD
  
+=======
+   
+>>>>>>> test
 }
