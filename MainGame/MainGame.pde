@@ -45,7 +45,10 @@ PImage ast_l, ast_m, ast_s, ast_xs;
 ArrayList<Asteroid> asteroids;
 Ship ship;
 ControlP5 cp5;
-
+Textlabel txtTimer;
+long timer = -1;
+StopWatchTimer sw;
+boolean over = false;
 
 /* 
  * Description: initialize and load image resources
@@ -112,6 +115,14 @@ void initForPlayerNameRequest() {
      .getCaptionLabel().align(ControlP5.CENTER, ControlP5.CENTER)
      ;    
      
+     sw = new StopWatchTimer();
+     
+     txtTimer = cp5.addTextlabel("label")
+                    .setText("")
+                    .setPosition(50,30)
+                    .setColorValue(0xffffffff)
+                    .setFont(createFont("Georgia",20))
+                    ;
   textFont(font); 
 }
 
@@ -128,6 +139,22 @@ boolean isAstCollided(Asteroid a, Asteroid b) {
       (b.yPos + b.y_size < a.yPos)) return false;
   return true; 
 }
+
+/* 
+ *To check the collision between the ship and the asteroids
+ */
+boolean isAstShipCollided(Asteroid a, Ship s) {
+  
+  if ((a.xPos + 50 <= s.x) ||
+     (a.yPos  + 50 <= s.y) ||
+     (s.x  + 50 <= a.xPos) ||
+     (s.y  + 50 <= a.yPos)
+     ) return false;
+  return true; 
+}
+
+
+
 
 /* 
  * Description: will be called when the collision between 2 asteroids happens
@@ -186,7 +213,9 @@ void handlePlayerGreeting() {
       // stop screen for a while
       if(millis()- now >= time_delay) {
         state = GAME_START_STA;
-      } 
+      }
+      sw.start();
+     
 }
 
 /* 
@@ -194,7 +223,19 @@ void handlePlayerGreeting() {
  */ 
 void handleGameStart() {
   ship.update();
-  ship.display(); 
+  ship.display(over);
+  
+  if(timer!=0){
+    timer = 59 - sw.getElapsedTimeSecs();
+    txtTimer.setText("Time left: " + String.valueOf(timer));
+  }
+  else{
+    sw.stop();
+    over=true;
+    timer = 0;
+    text("Time Up",width/2,height/2-100);
+  }
+  
   
   // display asteroids
   for (int i = 0; i < asteroids.size(); i++) {
@@ -211,6 +252,19 @@ void handleGameStart() {
        }
      }
   }
+  
+  // Check for the collision between asteriod and ship
+  if(over==false){
+    for (int i = 0; i < asteroids.size(); ++i) {
+      if (isAstShipCollided(asteroids.get(i), ship)) {
+        //text("Collision",100,100);
+        over = true;
+        sw.stop();
+    }
+  }
+  }
+  
+  
   loop();
 
 }
