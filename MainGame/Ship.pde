@@ -13,7 +13,7 @@ class Ship{
   float Speed = 0.2;
   float Rotation = 0.05;
   
-
+/** The ship constructor for contructing the ship on screen **/
   Ship(int SCREEN_HEIGHT,int SCREEN_WIDTH){
     wid = SCREEN_WIDTH;
     hei = SCREEN_HEIGHT;
@@ -23,7 +23,7 @@ class Ship{
    
   }
   
-  
+  /** Map the keys from keyboard into direction and velocty**/
   void mapMovement(int keycode, boolean choice) {
   if (keycode == UP)
     up = choice;
@@ -36,7 +36,7 @@ class Ship{
 }
  
 
-
+/** Update the ship based on key movements**/
 void update(){
   
   v  = v + (up? Speed : 0) - (down? Speed : 0);
@@ -63,6 +63,7 @@ void update(){
 void display(boolean over) {
   background(space_bg);
   
+  /** If game is still running, do the normal functionality**/
   if(over==false){
     pushMatrix();
     translate(x, y);
@@ -74,6 +75,7 @@ void display(boolean over) {
     
     popMatrix();
   }
+  /**Else display game over for now**/
   else{
    text("Game Over" , gw/2,gh/2);
   } 

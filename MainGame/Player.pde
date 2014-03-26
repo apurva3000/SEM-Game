@@ -3,7 +3,7 @@ class Player {
   String name;
   int score;
   
-  
+  /** Store the player name and score**/
   Player(String name, int score){
     
     this.name = name;
