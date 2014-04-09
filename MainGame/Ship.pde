@@ -1,76 +1,51 @@
 class Ship{
   
   float x, y, z, v;
-  boolean up;
-  boolean down;
-  boolean left;
-  boolean right;
-  
-  int wid;
-  int hei;
+  boolean north, south, west, east;
+  int gw;
+  int gh;
  
-  float Acceleration = 0.98;
-  float Speed = 0.2;
-  float Rotation = 0.05;
-  
-/** The ship constructor for contructing the ship on screen **/
+  final float SPD = .2, ROT = .05, ACCEL = .98;
+
   Ship(int SCREEN_HEIGHT,int SCREEN_WIDTH){
-    wid = SCREEN_WIDTH;
-    hei = SCREEN_HEIGHT;
+    gw = SCREEN_WIDTH;
+    gh = SCREEN_HEIGHT;
  
-    x = wid/2-30;
-    y = hei/2-30;
-   
+    //x = gw/2-30;
+    //y = gh/2-30;
+    x = gw>>1;
+    y = gh>>1;
   }
   
-  /** Map the keys from keyboard into direction and velocty**/
-  void mapMovement(int keycode, boolean choice) {
-  if (keycode == UP)
-    up = choice;
-  else if (keycode == DOWN)
-    down = choice;
-  else if (keycode == LEFT)
-    left  = choice;
-  else if (keycode == RIGHT)
-    right  = choice;
+  
+  void setKeys(int k, boolean decision) {
+  if      (k == UP    | k == 'W')   north = decision;
+  else if (k == DOWN  | k == 'S')   south = decision;
+  else if (k == LEFT  | k == 'A')   west  = decision;
+  else if (k == RIGHT | k == 'D')   east  = decision;
 }
  
 
-/** Update the ship based on key movements**/
+
 void update(){
   
-  v  = v + (up? Speed : 0) - (down? Speed : 0);
-  z  = z +  (right?  Rotation : 0) - (left?  Rotation : 0);
+  v += (north? SPD : 0) - (south? SPD : 0);
+  z += (east?  ROT : 0) - (west?  ROT : 0);
   
   x = (x + cos(z)*v);
   y = (y + sin(z)*v);
   
-  if(x>wid-10) x=1;
-  if(x<0) x=wid-10;
-  if(y>hei-5) y=1;
-  if(y<0) y=hei-10;
+  if(x>gw-10) x=1;
+  if(x<0) x=gw-10;
+  if(y>gh-5) y=1;
+  if(y<0) y=gh-10;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-  v  = v*Acceleration;
-  
-  
-  
-=======
   v *= ACCEL;  
->>>>>>> test
-=======
-  v *= ACCEL;  
->>>>>>> c457622bbdc905664087194293ca3eb700e7f9a0
 }
  
 void display(boolean over) {
   background(space_bg);
   
-<<<<<<< HEAD
-  /** If game is still running, do the normal functionality**/
-=======
->>>>>>> c457622bbdc905664087194293ca3eb700e7f9a0
   if(over==false){
     pushMatrix();
     translate(x, y);
@@ -82,10 +57,6 @@ void display(boolean over) {
     
     popMatrix();
   }
-<<<<<<< HEAD
-  /**Else display game over for now**/
-=======
->>>>>>> c457622bbdc905664087194293ca3eb700e7f9a0
   else{
    text("Game Over" , gw/2,gh/2);
   } 
@@ -95,13 +66,5 @@ void display(boolean over) {
 
   
   
-<<<<<<< HEAD
-<<<<<<< HEAD
- 
-=======
    
->>>>>>> test
-=======
-   
->>>>>>> c457622bbdc905664087194293ca3eb700e7f9a0
 }

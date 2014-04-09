@@ -35,14 +35,6 @@ static final String PLAYER_GREETING_STR = "WELCOME TO THE ADVENTURE";
 // time for display welcome screen
 static final int WELCOME_DELAY_TIME = 2000;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-Player player;
-=======
->>>>>>> test
-=======
->>>>>>> c457622bbdc905664087194293ca3eb700e7f9a0
 
 // global variables
 String player_name_str = "";
@@ -211,30 +203,13 @@ void handlePlayerNameRequest() {
 void handlePlayerGreeting() {
       cp5.remove("submit");
       cp5.remove("Player's name");
-      
-      String player_name_str = player.getName();
-      
       background(welcome_bg);
       fill(255);
-<<<<<<< HEAD
-<<<<<<< HEAD
-      textSize(40);
-      textAlign(CENTER, CENTER);
-      
-      text(PLAYER_GREETING_STR, 360, 100);
-      text(player_name_str, 360, 150);
-=======
-=======
->>>>>>> c457622bbdc905664087194293ca3eb700e7f9a0
       textSize(70);
       textAlign(CENTER);
       text(PLAYER_GREETING_STR, width/2, height/3);
       textSize(50);
       text(player_name_str, width/2, height/3 + 60);
-<<<<<<< HEAD
->>>>>>> test
-=======
->>>>>>> c457622bbdc905664087194293ca3eb700e7f9a0
       // stop screen for a while
       if(millis()- now >= time_delay) {
         state = GAME_START_STA;
@@ -260,7 +235,6 @@ void handleGameStart() {
     timer = 0;
     text("Time Up",width/2,height/2-100);
   }
-<<<<<<< HEAD
   
   
   // display asteroids
@@ -269,16 +243,6 @@ void handleGameStart() {
     asteroids.get(i).move();
   }
   
-=======
-  
-  
-  // display asteroids
-  for (int i = 0; i < asteroids.size(); i++) {
-    asteroids.get(i).display();
-    asteroids.get(i).move();
-  }
-  
->>>>>>> c457622bbdc905664087194293ca3eb700e7f9a0
   noLoop();
   // check if there are two asteroid collided with each other or not
   for (int i = 0; i < asteroids.size(); ++i) {
@@ -325,32 +289,20 @@ void draw() {
 
 
 void keyPressed() {
-  ship.mapMovement(keyCode, true);
+  ship.setKeys(keyCode, true);
 }
  
 void keyReleased() {
-  ship.mapMovement(keyCode, false);
+  ship.setKeys(keyCode, false);
 }
 
 /* 
  * Description: handle event when Submit button is pushed
  */
 public void submit() {
-  String player_name_str = "";
   state = PLAYER_GREETING_STA;  
   // get the player's name
   player_name_str = cp5.get(Textfield.class,"Player's name").getText();
-<<<<<<< HEAD
-<<<<<<< HEAD
-  print(player_name_str);
-  
-  player = new Player(player_name_str,0);
-  
-=======
->>>>>>> test
-=======
->>>>>>> c457622bbdc905664087194293ca3eb700e7f9a0
   now = millis();
   time_delay = WELCOME_DELAY_TIME;
 }
-
