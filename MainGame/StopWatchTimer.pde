@@ -5,13 +5,21 @@ public class StopWatchTimer {
     private long stopTime = 0;
     private boolean running = false;
 
+<<<<<<< HEAD
     //Star the timer
+=======
+    
+>>>>>>> c457622bbdc905664087194293ca3eb700e7f9a0
     public void start() {
         this.startTime = System.currentTimeMillis();
         this.running = true;
     }
 
+<<<<<<< HEAD
     //Stop the timer
+=======
+    
+>>>>>>> c457622bbdc905664087194293ca3eb700e7f9a0
     public void stop() {
         this.stopTime = System.currentTimeMillis();
         this.running = false;

@@ -51,6 +51,7 @@ void update(){
   if(y<0) y=hei-10;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   v  = v*Acceleration;
   
   
@@ -58,12 +59,18 @@ void update(){
 =======
   v *= ACCEL;  
 >>>>>>> test
+=======
+  v *= ACCEL;  
+>>>>>>> c457622bbdc905664087194293ca3eb700e7f9a0
 }
  
 void display(boolean over) {
   background(space_bg);
   
+<<<<<<< HEAD
   /** If game is still running, do the normal functionality**/
+=======
+>>>>>>> c457622bbdc905664087194293ca3eb700e7f9a0
   if(over==false){
     pushMatrix();
     translate(x, y);
@@ -75,7 +82,10 @@ void display(boolean over) {
     
     popMatrix();
   }
+<<<<<<< HEAD
   /**Else display game over for now**/
+=======
+>>>>>>> c457622bbdc905664087194293ca3eb700e7f9a0
   else{
    text("Game Over" , gw/2,gh/2);
   } 
@@ -86,8 +96,12 @@ void display(boolean over) {
   
   
 <<<<<<< HEAD
+<<<<<<< HEAD
  
 =======
    
 >>>>>>> test
+=======
+   
+>>>>>>> c457622bbdc905664087194293ca3eb700e7f9a0
 }
