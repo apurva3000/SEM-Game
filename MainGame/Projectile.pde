@@ -7,9 +7,10 @@ class Projectile{
  int gw,gh;
  float Ox,Oy; // Original coordinates 
  boolean isDestroyed=false; //Check if destroyed
+ int type;
  
  //Constructor Class based on X,Y and rotation Z
-Projectile(float x, float y, float z){
+Projectile(float x, float y, float z, int t){
    X=x;Y=y;Z=z;
    pushMatrix();
    translate(x,y);
@@ -19,6 +20,7 @@ Projectile(float x, float y, float z){
   popMatrix();
     gw = SCREEN_WIDTH;
     gh = SCREEN_HEIGHT;
+    type = t;
 }
 
 
@@ -33,15 +35,23 @@ void update(){
        pushMatrix();
        translate(X,Y);
        rotate(Z);
-       ellipse(xPos,yPos,10,15);
-   
+       // display different type of weapons
+       if (type == WEAPON_SHOOTER_TYPE) {
+         fill(255, 0, 0); 
+        ellipse(xPos,yPos,10,15);   
+       } else if (type == WEAPON_FREEZER_TYPE) {
+         fill(0, 128, 255);
+         ellipse(xPos,yPos,10,15);
+       } else if (type == WEAPON_TRACTOR_TYPE) {
+         fill(0, 255, 0);
+         // TODO: display the tractor beam
+       }       
+       fill (255, 255, 255);
        popMatrix();
   
        Ox = X + cos(Z) * xPos;
        Oy = Y + sin(Z) * xPos;
-       //text(Ox,100,500);
-       //text(Oy,100,600);
-       text(Oy,100,500);
+       //text(Oy,100,500);
        }  
     }
 }

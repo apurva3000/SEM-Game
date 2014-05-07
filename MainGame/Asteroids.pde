@@ -9,6 +9,7 @@ class Asteroid {
    float angle; // asteroid's angle
    float speed; // asteroid's speed
    boolean isDestroyed; // idicate whether this asteroid was destroyed or not
+   boolean isMoving;
    
    /*
     * Description: Asteroid's constructor
@@ -39,6 +40,7 @@ class Asteroid {
       yPos = tempYPos;
       angle = a;
       isDestroyed = false;
+      isMoving = true;
    }
    
    /*
@@ -48,14 +50,21 @@ class Asteroid {
     //display asteroid
     if(isDestroyed) return; // do nothing if it was destroyed
     image(ast_img, xPos, yPos);  
-    move();
+    if (isMoving) move(); // update the asteroid's position if it is moving
+  }
+  
+  /*
+   * Description: freeze the asteroid
+   */
+  void freeze() {
+     isMoving = false; 
   }
   
   /*
    * Description: re-calculate coordinate when it is moving
    */
   void move() {
-    if (isDestroyed) return; // do nothing if it was destroyed
+    if (isDestroyed || !isMoving) return; // do nothing if it was destroyed or freezed
     
     xPos = xPos + speed*cos(radians(angle));
     yPos = yPos + speed*sin(radians(angle));

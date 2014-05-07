@@ -13,18 +13,26 @@ static final int SUBMIT_BOX_HEIGHT = 40;
 static final int SUBMIT_BOX_WIDTH = 100;
 static final int SPACESHIP_HEIGHT = 42;
 static final int SPACESHIP_WIDTH = 65;
+static final int BOARD_SCORE_WIDTH = 500;
+static final int BOARD_SCORE_HEIGHT = 500;
 
 // Program status
 static final int PLAYER_NAME_REQUEST_STA = 0;
 static final int PLAYER_GREETING_STA = 1;
 static final int GAME_START_STA = 2;
 static final int LEVEL_CHANGE_STA = 3;
+static final int GAME_END_STA = 4;
 
 // Asteroid size options
 static final int AST_LARGE_SIZE = 0;
 static final int AST_MEDIUM_SIZE = 1;
 static final int AST_SMALL_SIZE = 2;
 static final int AST_EXTRA_SMALL_SIZE = 3;
+
+// weapon types
+static final int WEAPON_SHOOTER_TYPE = 0;
+static final int WEAPON_FREEZER_TYPE = 1;
+static final int WEAPON_TRACTOR_TYPE = 2;
 
 static final int AST_NUM = 2;
 
@@ -46,10 +54,10 @@ PImage ast_l, ast_m, ast_s, ast_xs;
 ArrayList<Asteroid> asteroids;
 Ship ship;
 Player player;
+int currentWeapon;
 
 ControlP5 cp5;
-Textlabel txtTimer;
-Textlabel txtScore;
+Textlabel txtTimer, txtScore, txtWeapon;
 long timer = -1;
 StopWatchTimer sw;
 boolean over = false;
@@ -66,6 +74,7 @@ void initImages() {
   ast_m = loadImage("asteroid_medium.png");
   ast_s = loadImage("asteroid_small.png"); 
   ast_xs = loadImage("asteroid_xsmall.png");
+  currentWeapon = WEAPON_SHOOTER_TYPE;
 }
 
 /* 
@@ -75,7 +84,7 @@ void initAsteroids(int level) {
   asteroids = new ArrayList<Asteroid>();
   for (int i = 0; i < AST_NUM+level; i++) {
     float x = random(0, width);
-    float y = random(0, height);
+    float y = random(0, height/3);
     float angle = random(0, 360);
     asteroids.add(new Asteroid(AST_LARGE_SIZE, x, y, angle));
   }
@@ -92,7 +101,7 @@ void setup() {
   initImages();
   smooth();
   // initialize ship and asteroids
-  ship = new Ship(height, width);
+  ship = new Ship(height, width, currentWeapon);
   
   initAsteroids(1);
 }
@@ -136,6 +145,12 @@ void initForPlayerNameRequest() {
                     .setColorValue(0xffffffff)
                     .setFont(createFont("Georgia",20))
                     ;
+     txtWeapon = cp5.addTextlabel("label2")
+                    .setText("")
+                    .setPosition(width/3,30)
+                    .setColorValue(0xffffffff)
+                    .setFont(createFont("Georgia",20))
+                    ;
   textFont(font); 
 }
 
@@ -164,7 +179,7 @@ boolean isAstCollided(Asteroid a, Asteroid b) {
  *To check the collision between the ship and the asteroids
  */
 boolean isAstShipCollided(Asteroid a, Ship s) {
-  
+
   if ((a.xPos + 50 <= s.x) ||
      (a.yPos  + 50 <= s.y) ||
      (s.x  + 50 <= a.xPos) ||
@@ -191,12 +206,12 @@ void handleAstCollision(Asteroid a, Asteroid b) {
    b.destroyed();
    // split it into smaller pieces
    if (a.type != AST_EXTRA_SMALL_SIZE) {
-       asteroids.add(new Asteroid(a.type + 1, x1 + a.x_size/2, y1, a.angle - 45));
-       asteroids.add(new Asteroid(a.type + 1, x1 - a.x_size/2, y1, a.angle + 35));
+       asteroids.add(new Asteroid(a.type + 1, x1 + a.x_size/2, y1, a.angle - 90 * random(0.2, 1)));
+       asteroids.add(new Asteroid(a.type + 1, x1 - a.x_size/2, y1, a.angle + 90 * random(0.2, 1)));
    }
    if (b.type != AST_EXTRA_SMALL_SIZE) {
-       asteroids.add(new Asteroid(b.type + 1, x2 + b.x_size/2, y2, b.angle - 25));
-       asteroids.add(new Asteroid(b.type + 1, x2 - b.x_size/2, y2, b.angle + 75));
+       asteroids.add(new Asteroid(b.type + 1, x2 + b.x_size/2, y2, b.angle - 90 * random(0.2, 1)));
+       asteroids.add(new Asteroid(b.type + 1, x2 - b.x_size/2, y2, b.angle + 90 * random(0.2, 1)));
    }   
 }
 
@@ -277,22 +292,26 @@ boolean isAstProjCollided(Asteroid a, Projectile p) {
       
 }
 
-
-
-void handleAstProjCollision(Asteroid a, Projectile p) {
+void handleAstProjCollision(Asteroid a, Projectile p, Ship s) {
    // reserve asteroids' coordinates
    float x1 = a.xPos; 
    float y1 = a.yPos;
-   //float x2 = b.xPos;
-   //float y2 = b.yPos;
-   // destroy current asteroid and projectile
-   a.destroyed();
    p.destroyed();
-   
-   // split it into smaller pieces
-   if (a.type != AST_EXTRA_SMALL_SIZE) {
-       asteroids.add(new Asteroid(a.type + 1, x1 + a.x_size/2, y1, a.angle - 45));
-       asteroids.add(new Asteroid(a.type + 1, x1 - a.x_size/2, y1, a.angle + 35));
+   // destroy current asteroid and projectile
+   if (p.type == WEAPON_SHOOTER_TYPE) {
+    // print("shoot");
+     a.destroyed();     
+     // split it into smaller pieces
+     if (a.type != AST_EXTRA_SMALL_SIZE) {
+         asteroids.add(new Asteroid(a.type + 1, x1 + a.x_size/2, y1, a.angle - 90 * random(0.2, 1)));
+         asteroids.add(new Asteroid(a.type + 1, x1 - a.x_size/2, y1, a.angle + 90 * random(0.2, 1)));
+     }
+   } else if (p.type == WEAPON_FREEZER_TYPE) {
+      a.freeze(); 
+      //print("freeze");
+   } else if (p.type == WEAPON_TRACTOR_TYPE) {
+      print("tractor");
+      // TODO:
    }
   
   
@@ -308,7 +327,7 @@ void handleAstProjCollision(Asteroid a, Projectile p) {
 void handleGameStart() {
   ship.update();
   ship.display(over);
-  txtScore.setText("Score: "+String.valueOf(player.getScore()));
+  txtScore.setText("Score: " + String.valueOf(player.getScore()));
   if(timer!=0){
     timer = 59 - sw.getElapsedTimeSecs();
     txtTimer.setText("Time left: " + String.valueOf(timer));
@@ -318,7 +337,7 @@ void handleGameStart() {
     over=true;
     timer = 0;
     //text("Time Up",width/2,height/2-100);
-    text("Level "+String.valueOf(level+1), width/2, height/2-100);
+    text("Level " + String.valueOf(level+1), width/2, height/2-100);
     asteroids.clear();
     projs.clear();
     state=LEVEL_CHANGE_STA;
@@ -358,9 +377,9 @@ void handleGameStart() {
     for (int i = 0; i < asteroids.size(); ++i) {
       for (Projectile p : projs){
         if (isAstProjCollided(asteroids.get(i), p)) {
-        text("Collision",100,100);
+        //text("Collision",100,100);
         player.updateScore();
-        handleAstProjCollision(asteroids.get(i),p);
+        handleAstProjCollision(asteroids.get(i),p, ship);
         }
       }
     }
@@ -371,6 +390,32 @@ void handleGameStart() {
   loop();
 
 }
+
+/* 
+ * Description: response for GAME_END_STA state
+ */ 
+
+void handleGameEnd() {
+    noLoop();
+    try{
+        Thread.sleep(1000);
+    } catch(Exception e){ }
+    // display the board score
+    rect(width/2 - BOARD_SCORE_WIDTH/2, height/2 - BOARD_SCORE_HEIGHT/2,
+        BOARD_SCORE_WIDTH, BOARD_SCORE_HEIGHT);
+    fill(0, 0, 0);
+    textSize(50);
+    text("Game Over" , width/2, height/4);
+    textSize(40);
+    text("Player", width/2 - 120, height/4 + 100);
+    text("Score", width/2 - 120 + BOARD_SCORE_WIDTH/2, height/4 + 100);
+    textSize(30);
+    text(player_name_str, width/2 - 120, height/4 + 150);
+    text(player.getScore(), width/2 - 120 + BOARD_SCORE_WIDTH/2, height/4 + 150);
+    
+        
+}
+
 
 /* 
  * Description: draw function, will be called continuously implicitly
@@ -391,7 +436,12 @@ void draw() {
       
    case GAME_START_STA:
       handleGameStart();
+      break;
+  
+   case GAME_END_STA:
+      handleGameEnd();
   }
+
 }
 
 
@@ -402,6 +452,18 @@ void keyPressed() {
     if (key == ' ') {
       ship.setFire();
     }
+  }
+  if (keyPressed) {
+     if (key == '1') {
+        txtWeapon.setText("Weapon: SHOOTER");
+        ship.setProjectile(WEAPON_SHOOTER_TYPE);
+     } else if (key == '2') {
+        txtWeapon.setText("Weapon: FREEZER");
+        ship.setProjectile(WEAPON_FREEZER_TYPE); 
+     } else if (key == '3') {
+        txtWeapon.setText("Weapon: TRACTOR");
+        ship.setProjectile(WEAPON_TRACTOR_TYPE); 
+     }
   }
 }
  

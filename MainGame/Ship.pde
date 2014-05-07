@@ -5,17 +5,19 @@ class Ship{
   int gw;
   int gh;
   boolean fire=false;
+  int pt_type;
  
   final float SPD = .2, ROT = .05, ACCEL = .98;
 
-  Ship(int SCREEN_HEIGHT,int SCREEN_WIDTH){
+  Ship(int SCREEN_HEIGHT,int SCREEN_WIDTH, int t){
     gw = SCREEN_WIDTH;
     gh = SCREEN_HEIGHT;
  
     //x = gw/2-30;
     //y = gh/2-30;
     x = gw>>1;
-    y = gh>>1;
+    y = gh - 100;
+    pt_type = t; // default projectile
   }
   
   
@@ -29,15 +31,14 @@ class Ship{
 
 
 void setFire(){
-  
-  Projectile p = new Projectile(x,y,z);
-  fire=true;
+  Projectile p = new Projectile(x,y,z, pt_type);
   projs.add(p);
-  
-  
+  fire=true;  
 }
  
-
+void setProjectile(int type) {
+   pt_type = type; 
+}
 
 void update(){
   
@@ -68,20 +69,16 @@ void display(boolean over) {
     //text(x,50,50);
     //ellipse(x,y,70,70);
     popMatrix();
-    if(fire==true){
- 
+    if(fire==true){ 
       for (Projectile p : projs){     
       p.update();
       }
     }
   }
   else{
-   text("Game Over" , gw/2,gh/2);
+   state = GAME_END_STA;
+   //text("Game Over" , gw/2,gh/2);
   } 
 }
-
-
-  
-  
    
 }
