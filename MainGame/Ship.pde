@@ -4,6 +4,7 @@ class Ship{
   boolean north, south, west, east;
   int gw;
   int gh;
+  boolean fire=false;
  
   final float SPD = .2, ROT = .05, ACCEL = .98;
 
@@ -23,6 +24,17 @@ class Ship{
   else if (k == DOWN  | k == 'S')   south = decision;
   else if (k == LEFT  | k == 'A')   west  = decision;
   else if (k == RIGHT | k == 'D')   east  = decision;
+}
+
+
+
+void setFire(){
+  
+  Projectile p = new Projectile(x,y,z);
+  fire=true;
+  projs.add(p);
+  
+  
 }
  
 
@@ -54,13 +66,18 @@ void display(boolean over) {
     spaceship.loadPixels();
     int loc = int(x) + int(y*spaceship.width);
     //text(x,50,50);
-    
+    //ellipse(x,y,70,70);
     popMatrix();
+    if(fire==true){
+ 
+      for (Projectile p : projs){     
+      p.update();
+      }
+    }
   }
   else{
    text("Game Over" , gw/2,gh/2);
   } 
-  text(brightness(spaceship.pixels[100]),500,500);
 }
 
 

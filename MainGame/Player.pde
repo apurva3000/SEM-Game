@@ -12,6 +12,11 @@ class Player {
     
   }
   
+  void updateScore(){
+    
+    this.score = this.score+1;
+    
+  }
   
   void setScore(int score){
     
