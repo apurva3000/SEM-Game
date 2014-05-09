@@ -34,7 +34,7 @@ static final int WEAPON_SHOOTER_TYPE = 0;
 static final int WEAPON_FREEZER_TYPE = 1;
 static final int WEAPON_TRACTOR_TYPE = 2;
 
-static final int AST_NUM = 2;
+static final int AST_NUM = 1;
 
 // static strings
 static final String GAME_NAME_STR = "FLAPPY SHIP ANGRY ASTEROIDS";
@@ -63,6 +63,7 @@ StopWatchTimer sw;
 boolean over = false;
 int level = 1;
 ArrayList<Projectile> projs = new ArrayList<Projectile>();
+boolean tractor = false;
 /* 
  * Description: initialize and load image resources
  */
@@ -296,10 +297,11 @@ void handleAstProjCollision(Asteroid a, Projectile p, Ship s) {
    // reserve asteroids' coordinates
    float x1 = a.xPos; 
    float y1 = a.yPos;
-   p.destroyed();
+   
    // destroy current asteroid and projectile
    if (p.type == WEAPON_SHOOTER_TYPE) {
     // print("shoot");
+     p.destroyed();
      a.destroyed();     
      // split it into smaller pieces
      if (a.type != AST_EXTRA_SMALL_SIZE) {
@@ -307,11 +309,11 @@ void handleAstProjCollision(Asteroid a, Projectile p, Ship s) {
          asteroids.add(new Asteroid(a.type + 1, x1 - a.x_size/2, y1, a.angle + 90 * random(0.2, 1)));
      }
    } else if (p.type == WEAPON_FREEZER_TYPE) {
-      a.freeze(); 
+     p.destroyed(); 
+     a.freeze(); 
       //print("freeze");
    } else if (p.type == WEAPON_TRACTOR_TYPE) {
-      print("tractor");
-      // TODO:
+      a.startPull(p);
    }
   
   
@@ -347,7 +349,7 @@ void handleGameStart() {
   // display asteroids
   for (int i = 0; i < asteroids.size(); i++) {
     asteroids.get(i).display();
-    asteroids.get(i).move();
+    //asteroids.get(i).move();
   }
   
   noLoop();
@@ -377,8 +379,9 @@ void handleGameStart() {
     for (int i = 0; i < asteroids.size(); ++i) {
       for (Projectile p : projs){
         if (isAstProjCollided(asteroids.get(i), p)) {
-        //text("Collision",100,100);
-        player.updateScore();
+          if(tractor==false){
+            player.updateScore(); // Only update the scores for weapons other than the tractor beam
+          }
         handleAstProjCollision(asteroids.get(i),p, ship);
         }
       }
@@ -448,23 +451,34 @@ void draw() {
 void keyPressed() {
   ship.setKeys(keyCode, true);
   
+  
+  
   if (keyPressed) {
     if (key == ' ') {
       ship.setFire();
+      if(tractor==true){
+        ship.freeze(1);
+      }
     }
-  }
-  if (keyPressed) {
+    
+    if (keyPressed) {
      if (key == '1') {
         txtWeapon.setText("Weapon: SHOOTER");
         ship.setProjectile(WEAPON_SHOOTER_TYPE);
+        tractor=false;
      } else if (key == '2') {
         txtWeapon.setText("Weapon: FREEZER");
         ship.setProjectile(WEAPON_FREEZER_TYPE); 
+        tractor=false;
      } else if (key == '3') {
         txtWeapon.setText("Weapon: TRACTOR");
-        ship.setProjectile(WEAPON_TRACTOR_TYPE); 
+        ship.setProjectile(WEAPON_TRACTOR_TYPE);
+        tractor=true;
      }
   }
+    
+  }
+  
 }
  
 void keyReleased() {

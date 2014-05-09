@@ -26,9 +26,15 @@ Projectile(float x, float y, float z, int t){
 
 void update(){
   if(isDestroyed==false){
-   if(xPos>1200){
+   if(xPos>1200){ // Destroy the projectile upon crossing the border
      isDestroyed=true;
-   }
+     
+     if(tractor==true)
+       {
+        ship.freeze(0); //Unfreeze the ship, if the tractor beam is over
+       } 
+     }
+       
    else{
       xPos=xPos+5;
       yPos=1;
@@ -43,8 +49,9 @@ void update(){
          fill(0, 128, 255);
          ellipse(xPos,yPos,10,15);
        } else if (type == WEAPON_TRACTOR_TYPE) {
-         fill(0, 255, 0);
+         fill(255, 255, 0);
          // TODO: display the tractor beam
+         rect(0,0,xPos,10);
        }       
        fill (255, 255, 255);
        popMatrix();
@@ -53,10 +60,10 @@ void update(){
        Oy = Y + sin(Z) * xPos;
        //text(Oy,100,500);
        }  
-    }
+    
 }
 
-
+}
 
 
 /*
@@ -65,6 +72,7 @@ void update(){
   void destroyed() {
     xPos = 1500;
     isDestroyed = true;
+    
   }
 
 }

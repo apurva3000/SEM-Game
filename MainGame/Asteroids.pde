@@ -10,7 +10,10 @@ class Asteroid {
    float speed; // asteroid's speed
    boolean isDestroyed; // idicate whether this asteroid was destroyed or not
    boolean isMoving;
+   boolean isPulled;
    
+   float X,Y,Z;
+   Projectile p;
    /*
     * Description: Asteroid's constructor
     */
@@ -49,8 +52,22 @@ class Asteroid {
    void display() {
     //display asteroid
     if(isDestroyed) return; // do nothing if it was destroyed
+    
+    if (isPulled==true) {
+      if(p.isDestroyed==true){ 
+        isPulled=false;
+        isMoving=true;
+        xPos = Ox;
+        yPos = Oy;
+      }
+      else
+      pull();
+    }
+    else{
+      
     image(ast_img, xPos, yPos);  
     if (isMoving) move(); // update the asteroid's position if it is moving
+    }
   }
   
   /*
@@ -59,13 +76,28 @@ class Asteroid {
   void freeze() {
      isMoving = false; 
   }
+ 
+ 
+ // Pull the asteroid towards sh 
+  void startPull(Projectile p){
+    
+   this.p = p;
+   
+   isPulled = true;
+   isMoving = false; 
+   this.X = p.X;
+   this.Y = p.Y;
+   this.Z = p.Z;
+    
+  }
   
   /*
    * Description: re-calculate coordinate when it is moving
    */
   void move() {
     if (isDestroyed || !isMoving) return; // do nothing if it was destroyed or freezed
-    
+    text(xPos,100,100);
+    text(yPos,100,200);
     xPos = xPos + speed*cos(radians(angle));
     yPos = yPos + speed*sin(radians(angle));
     
@@ -82,6 +114,29 @@ class Asteroid {
        yPos = height;
      }
     }
+ 
+ 
+ float xPosPull=0;
+float yPosPull=0;
+float Ox;
+float Oy;
+
+
+/**Tractor Beam Pull **/
+   void pull(){
+    xPosPull = xPosPull - 0.5;
+    yPosPull = 1;
+   pushMatrix(); 
+   translate(xPos,yPos);
+   rotate(Z);
+   image(ast_img, xPosPull, yPosPull);
+   popMatrix();
+   
+   //The coordinates in original dimensions
+   Ox = xPos + cos(Z) * xPosPull;
+   Oy = yPos + sin(Z) * xPosPull;
+     
+   }
  
   /*
    * Description: destroy asteroid

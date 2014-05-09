@@ -6,6 +6,7 @@ class Ship{
   int gh;
   boolean fire=false;
   int pt_type;
+  boolean freeze=false;
  
   final float SPD = .2, ROT = .05, ACCEL = .98;
 
@@ -42,6 +43,7 @@ void setProjectile(int type) {
 
 void update(){
   
+  if(freeze==false){
   v += (north? SPD : 0) - (south? SPD : 0);
   z += (east?  ROT : 0) - (west?  ROT : 0);
   
@@ -53,7 +55,8 @@ void update(){
   if(y>gh-5) y=1;
   if(y<0) y=gh-10;
 
-  v *= ACCEL;  
+  v *= ACCEL;
+  }
 }
  
 void display(boolean over) {
@@ -81,4 +84,11 @@ void display(boolean over) {
   } 
 }
    
+// Freeze or Unfreeze the ship during tractor beam
+ void freeze(int state){
+   if(state==1)
+     freeze=true;
+   else
+     freeze=false;
+ }
 }
