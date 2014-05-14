@@ -1,45 +1,43 @@
-class Player {
-  
-  String name;
-  int score;
-  
-  
-  Player(String name, int score){
+class Player {  
+    String name;  // player's name
+    int score;    // player's score
     
-    this.name = name;
-    this.score = score;
+    /*
+     * Description: Player's constructor
+     * Input: name - player's score
+     *        score - player's name
+     */ 
+    Player(String name, int score){    
+        this.name = name;
+        this.score = score;    
+    }
     
+    /*
+     * Description: update player's score
+     */
+    void updateScore(){    
+        this.score = this.score+1;    
+    }
     
-  }
-  
-  void updateScore(){
+    /*
+     * Description: set player's score
+     */
+    void setScore(int score){    
+        this.score = score;    
+    }
     
-    this.score = this.score+1;
+    /*
+     * Description: get player's name
+     */
+    String getName(){   
+       return this.name;   
+    }
     
-  }
-  
-  void setScore(int score){
-    
-    this.score = score;
-    
-  }
-  
-  String getName(){
-    
-   
-   return this.name;
-   
-  }
-  
-  
-  int getScore(){
-    
-   
-   return this.score; 
-    
-  }
-     
- 
-  
+    /*
+     * Description: get player's score
+     */
+    int getScore(){   
+       return this.score;     
+    }  
   
 }

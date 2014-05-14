@@ -1,16 +1,15 @@
 
 class Asteroid {
-   //int id; // identifier for asteroid
-   int type; // asteroid types: large, medium, small, and extra-small
-   int x_size, y_size; // size of asteroid
-   PImage ast_img; // image source of asteroid
-   float xPos; // x - coordinate
-   float yPos; // y - coordinate
-   float angle; // asteroid's angle
-   float speed; // asteroid's speed
-   boolean isDestroyed; // idicate whether this asteroid was destroyed or not
-   boolean isMoving;
-   boolean isPulled;
+   int type;             // asteroid types: large, medium, small, and extra-small
+   int x_size, y_size;   // size of asteroid
+   PImage ast_img;       // image source of asteroid
+   float xPos;           // x - coordinate
+   float yPos;           // y - coordinate
+   float angle;          // asteroid's angle
+   float speed;          // asteroid's speed
+   boolean isDestroyed;  // indicate whether this asteroid was destroyed or not
+   boolean isMoving;     // indicate if the Asteroid is moving or not
+   boolean isPulled;     // indicate if the asteroid is pulled toward the ship or not
    
    float X,Y,Z;
    Projectile p;
@@ -50,100 +49,97 @@ class Asteroid {
     * Description: display asteroid
     */
    void display() {
-    //display asteroid
-    if(isDestroyed) return; // do nothing if it was destroyed
-    
-    if (isPulled==true) {
-      if(p.isDestroyed==true){ 
-        isPulled=false;
-        isMoving=true;
-        xPos = Ox;
-        yPos = Oy;
-      }
-      else
-      pull();
-    }
-    else{
+      //display asteroid
+      if(isDestroyed) return; // do nothing if it was destroyed
       
-    image(ast_img, xPos, yPos);  
-    if (isMoving) move(); // update the asteroid's position if it is moving
+      if (isPulled==true) {
+          if(p.isDestroyed==true){ 
+              isPulled=false;
+              isMoving=true;
+              xPos = Ox;
+              yPos = Oy;
+          } else
+              pull();
+      }
+      else {        
+          image(ast_img, xPos, yPos);  
+          if (isMoving) move(); // update the asteroid's position if it is moving
+      }
     }
-  }
   
-  /*
-   * Description: freeze the asteroid
-   */
-  void freeze() {
-     isMoving = false; 
-  }
+    /*
+     * Description: freeze the asteroid
+     */
+    void freeze() {
+       isMoving = false; 
+    }
  
  
- // Pull the asteroid towards sh 
-  void startPull(Projectile p){
+   // Pull the asteroid towards sh 
+    void startPull(Projectile p){    
+       this.p = p;
+       
+       isPulled = true;
+       isMoving = false; 
+       this.X = p.X;
+       this.Y = p.Y;
+       this.Z = p.Z;    
+    }
     
-   this.p = p;
+    /*
+     * Description: re-calculate coordinate when it is moving
+     */
+    void move() {
+        if (isDestroyed || !isMoving) return; // do nothing if it was destroyed or freezed
+        //text(xPos,100,100);
+        //text(yPos,100,200);
+        xPos = xPos + speed*cos(radians(angle));
+        yPos = yPos + speed*sin(radians(angle));
+        
+        if (xPos > width) {
+            xPos = 0 - x_size;
+        }
+        if (xPos < 0 - x_size) {
+            xPos = width;
+        }
+        if (yPos > height) {
+           yPos = 0 - y_size;
+        }
+        if (yPos < 0 - y_size) {
+           yPos = height;
+        }
+    }
    
-   isPulled = true;
-   isMoving = false; 
-   this.X = p.X;
-   this.Y = p.Y;
-   this.Z = p.Z;
-    
-  }
+   
+    float xPosPull=0;
+    float yPosPull=0;
+    float Ox;
+    float Oy;
   
-  /*
-   * Description: re-calculate coordinate when it is moving
-   */
-  void move() {
-    if (isDestroyed || !isMoving) return; // do nothing if it was destroyed or freezed
-    text(xPos,100,100);
-    text(yPos,100,200);
-    xPos = xPos + speed*cos(radians(angle));
-    yPos = yPos + speed*sin(radians(angle));
-    
-    if (xPos > width) {
-      xPos = 0 - x_size;
-    }
-    if (xPos < 0 - x_size) {
-      xPos = width;
-    }
-     if (yPos > height) {
-       yPos = 0 - y_size;
+  
+    /*
+     * Description: pull asteroid towards the ship
+     */
+     void pull(){
+         xPosPull = xPosPull - 0.5;
+         yPosPull = 1;
+         pushMatrix(); 
+         translate(xPos,yPos);
+         rotate(Z);
+         image(ast_img, xPosPull, yPosPull);
+         popMatrix();
+         
+         //The coordinates in original dimensions
+         Ox = xPos + cos(Z) * xPosPull;
+         Oy = yPos + sin(Z) * xPosPull;     
      }
-     if (yPos < 0 - y_size) {
-       yPos = height;
-     }
-    }
- 
- 
- float xPosPull=0;
-float yPosPull=0;
-float Ox;
-float Oy;
-
-
-/**Tractor Beam Pull **/
-   void pull(){
-    xPosPull = xPosPull - 0.5;
-    yPosPull = 1;
-   pushMatrix(); 
-   translate(xPos,yPos);
-   rotate(Z);
-   image(ast_img, xPosPull, yPosPull);
-   popMatrix();
    
-   //The coordinates in original dimensions
-   Ox = xPos + cos(Z) * xPosPull;
-   Oy = yPos + sin(Z) * xPosPull;
-     
-   }
- 
-  /*
-   * Description: destroy asteroid
-   */
-  void destroyed() {
-    xPos = -1000;
-    speed = 0;
-    isDestroyed = true;
-  }
+    /*
+     * Description: destroy asteroid
+     */
+    void destroyed() {
+        xPos = -1000;
+        speed = 0;
+        isDestroyed = true;
+    }
 }
